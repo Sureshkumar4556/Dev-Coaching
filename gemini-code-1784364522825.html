@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev Coaching - Online HTML Examination Portal</title>
+    <style>
+        /* --- GLOBAL STYLES --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        body {
+            background-color: #fcfbfe;
+            color: #2d2736;
+            overflow-x: hidden;
+            height: 100vh;
+        }
+
+        /* --- MODERN METRO CHROMATIC UTILITIES (ORANGE, WHITE, PURPLE) --- */
+        :root {
+            --primary: #6d28d9;          /* Deep Royal Purple */
+            --primary-hover: #5b21b6;
+            --primary-light: #f5f3ff;
+            --accent: #f97316;           /* Vibrant Orange */
+            --accent-hover: #ea580c;
+            --accent-light: #fff7ed;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --gray-light: #e2e0e7;
+            --gray-medium: #948f9f;
+            --gray-dark: #4a4355;
+            --shadow: 0 4px 6px -1px rgba(109, 40, 217, 0.05), 0 2px 4px -1px rgba(109, 40, 217, 0.03);
+            --shadow-lg: 0 10px 25px -5px rgba(109, 40, 217, 0.1), 0 8px 10px -6px rgba(109, 40, 217, 0.05);
+        }
+
+        /* --- VIEWS CONTROLLER --- */
+        .view-section {
+            display: none;
+            min-height: 100vh;
+            width: 100%;
+            padding: 2rem 1rem;
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+
+        .view-section.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- CARD STYLES --- */
+        .portal-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 650px;
+            padding: 2.5rem;
+            border-top: 6px solid var(--accent);
+            border-left: 1px solid var(--primary-light);
+            border-right: 1px solid var(--primary-light);
+        }
+
+        /* --- TYPOGRAPHY --- */
+        .portal-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .portal-header h1 {
+            color: var(--primary);
+            font-size: 2.4rem;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+            letter-spacing: -0.5px;
+        }
+
+        .portal-header p {
+            color: var(--accent);
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            color: var(--gray-dark);
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* --- FORMS & BUTTONS --- */
+        .form-group {
+            margin-bottom: 1.5rem;
+            width: 100%;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.85rem 1.1rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            background-color: #faf9fb;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px var(--primary-light);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.85rem 1.75rem;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            width: 100%;
+            text-decoration: none;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(109, 40, 217, 0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-accent {
+            background-color: var(--accent);
+            color: white;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
+        }
+
+        .btn-accent:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--gray-light);
+            color: var(--primary-hover);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        /* --- INSTRUCTIONS PAGE --- */
+        .instructions-list {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .instructions-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--primary-light);
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+            color: var(--gray-dark);
+        }
+
+        .instructions-list li::before {
+            content: "✦";
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-right: 0.85rem;
+            line-height: 0;
+        }
+
+        /* --- MAIN EXAM SCREEN LAYOUT --- */
+        .exam-layout {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 1200px;
+            height: calc(100vh - 120px);
+            align-items: start;
+        }
+
+        #examView {
+            padding: 1rem;
+            justify-content: flex-start;
+        }
+
+        .exam-header {
+            grid-column: span 2;
+            background: white;
+            width: 100%;
+            max-width: 1200px;
+            padding: 1.25rem 1.75rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            border-bottom: 4px solid var(--primary);
+        }
+
+        .exam-logo h2 {
+            margin: 0;
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 1.5rem;
+        }
+
+        .exam-logo span {
+            color: var(--accent);
+        }
+
+        .exam-timer-box {
+            background: var(--accent-light);
+            border: 1px solid #ffedd5;
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 800;
+            color: var(--accent-hover);
+            font-size: 1.25rem;
+            box-shadow: inset 0 1px 2px rgba(249, 115, 22, 0.05);
+        }
+
+        .main-panel {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 2.5rem;
+            min-height: 480px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid #f3f1f6;
+        }
+
+        /* --- QUESTION PRESENTATION --- */
+        .question-number {
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--gray-dark);
+            margin-bottom: 1.75rem;
+            line-height: 1.5;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            margin-bottom: 2rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 1.1rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+            background-color: #faf9fb;
+        }
+
+        .option-label:hover {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary-hover);
+        }
+
+        .option-label input[type="radio"] {
+            margin-right: 1.1rem;
+            width: 1.3rem;
+            height: 1.3rem;
+            accent-color: var(--primary);
+        }
+
+        .option-label.selected {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(109, 40, 217, 0.08);
+        }
+
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            border-top: 1px solid var(--gray-light);
+            padding-top: 1.75rem;
+        }
+
+        .action-bar .btn {
+            width: auto;
+            min-width: 140px;
+        }
+
+        /* --- SIDEBAR PALETTE --- */
+        .side-panel {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 1.75rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #f3f1f6;
+        }
+
+        .side-panel h3 {
+            font-size: 1.1rem;
+            color: var(--gray-dark);
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 2px solid var(--primary-light);
+            font-weight: 700;
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.6rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .palette-btn {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            border: none;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .palette-btn:hover {
+            transform: scale(1.08);
+        }
+
+        /* Palette States */
+        .p-unvisited { background-color: var(--gray-light); color: var(--gray-dark); }
+        .p-visited { background-color: var(--accent); color: white; }
+        .p-answered { background-color: var(--primary); color: white; }
+        .p-current { box-shadow: 0 0 0 2px white, 0 0 0 4px var(--primary); transform: scale(1.05); }
+
+        .legend-box {
+            margin-top: auto;
+            border-top: 1px solid var(--primary-light);
+            padding-top: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            font-size: 0.85rem;
+            color: var(--gray-dark);
+            font-weight: 600;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .legend-color {
+            width: 18px;
+            height: 18px;
+            border-radius: 6px;
+        }
+
+        /* --- MODALS & POPUPS --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(45, 39, 54, 0.4);
+            backdrop-filter: blur(6px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 450px;
+            padding: 2.2rem;
+            text-align: center;
+            animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            border-top: 6px solid var(--primary);
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon {
+            font-size: 3.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .modal-icon.warn { color: var(--accent); }
+        .modal-icon.confirm { color: var(--primary); }
+
+        .modal-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--gray-dark);
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.3px;
+        }
+
+        .modal-msg {
+            color: var(--gray-medium);
+            font-size: 0.95rem;
+            margin-bottom: 1.75rem;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.85rem;
+            justify-content: center;
+        }
+
+        .modal-actions .btn {
+            width: auto;
+            min-width: 125px;
+        }
+
+        /* ========================================== */
+        /* REDESIGNED REPORT CARD GRID ENVIRONMENT     */
+        /* ========================================== --> */
+        .result-container {
+            width: 100%;
+            max-width: 1000px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            padding: 3rem;
+            border-top: 8px solid var(--primary);
+            border-bottom: 8px solid var(--accent);
+        }
+
+        .modern-report-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2.5rem;
+            margin-top: 2rem;
+            align-items: start;
+        }
+
+        /* Left Hero Panel */
+        .report-hero-panel {
+            background: linear-gradient(135deg, var(--primary-light) 0%, #fff7ed 100%);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border: 1px solid #f1edfa;
+            box-shadow: inset 0 2px 4px rgba(109, 40, 217, 0.02);
+        }
+
+        .circle-progress {
+            width: 170px;
+            height: 170px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent) 0deg, var(--gray-light) 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.15);
+        }
+
+        .circle-progress::before {
+            content: "";
+            position: absolute;
+            width: 136px;
+            height: 136px;
+            background: #ffffff;
+            border-radius: 50%;
+        }
+
+        .circle-value {
+            position: relative;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .badge-grade {
+            padding: 0.5rem 2rem;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: white;
+            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            letter-spacing: 0.5px;
+            display: inline-block;
+        }
+
+        .status-pass { background: linear-gradient(135deg, var(--success) 0%, #059669; 100%); }
+        .status-fail { background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%); }
+
+        /* Right Content Dashboard Panel */
+        .report-dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .analytics-metrics-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .modern-metric-tile {
+            background: #ffffff;
+            border: 2px solid var(--gray-light);
+            border-radius: 16px;
+            padding: 1.25rem;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .modern-metric-tile:hover {
+            transform: translateY(-2px);
+        }
+
+        .modern-metric-tile.tile-accent {
+            border-color: var(--accent-light);
+            background: var(--accent-light);
+        }
+        .modern-metric-tile.tile-accent .tile-v { color: var(--accent-hover); }
+
+        .modern-metric-tile.tile-primary {
+            border-color: var(--primary-light);
+            background: var(--primary-light);
+        }
+        .modern-metric-tile.tile-primary .tile-v { color: var(--primary); }
+
+        .tile-l {
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--gray-medium);
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .tile-v {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--gray-dark);
+        }
+
+        /* Metadata Parameters Cards */
+        .candidate-metadata-card {
+            background: #faf9fb;
+            border-radius: 16px;
+            padding: 1.75rem;
+            border: 1px solid #f1eff4;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem 2rem;
+        }
+
+        .meta-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            border-bottom: 1px solid #f1eff4;
+            padding-bottom: 0.5rem;
+        }
+
+        .meta-field-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--gray-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-field-value {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--gray-dark);
+        }
+
+        /* --- REVIEW ERROR MODULE PANEL --- */
+        .review-section-wrapper {
+            grid-column: span 2;
+            border-top: 2px dashed var(--gray-light);
+            padding-top: 2rem;
+            margin-top: 0.5rem;
+        }
+
+        .review-title-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .review-title-box h3 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .review-scroller {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        /* Custom Scrollbar */
+        .review-scroller::-webkit-scrollbar { width: 6px; }
+        .review-scroller::-webkit-scrollbar-track { background: var(--primary-light); border-radius: 10px; }
+        .review-scroller::-webkit-scrollbar-thumb { background: var(--gray-medium); border-radius: 10px; }
+
+        .review-item-card {
+            background: #ffffff;
+            border: 1px solid var(--gray-light);
+            border-left: 5px solid var(--danger);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .review-q-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--gray-dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .review-ans-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .ans-block {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .ans-block.user-filled {
+            background-color: #fef2f2;
+            color: var(--danger);
+            border: 1px dashed #fca5a5;
+        }
+
+        .ans-block.correct-target {
+            background-color: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .report-action-row {
+            grid-column: span 2;
+            display: flex;
+            gap: 1.25rem;
+            margin-top: 1rem;
+        }
+
+        /* --- RESPONSIVE FIXES --- */
+        @media (max-width: 868px) {
+            .exam-layout {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            .exam-header {
+                grid-column: span 1;
+            }
+            .side-panel {
+                order: -1;
+            }
+            .palette-grid {
+                grid-template-columns: repeat(10, 1fr);
+            }
+            .modern-report-grid {
+                grid-template-columns: 1fr;
+            }
+            .report-hero-panel {
+                padding: 2rem;
+            }
+            .candidate-metadata-card {
+                grid-template-columns: 1fr;
+            }
+            .review-section-wrapper {
+                grid-column: span 1;
+            }
+            .report-action-row {
+                grid-column: span 1;
+                flex-direction: column;
+            }
+            .review-ans-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* --- PRINT CSS ENGINE --- */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            .view-section {
+                display: none !important;
+            }
+            #resultView {
+                display: block !important;
+                padding: 0;
+                margin: 0;
+            }
+            .result-container {
+                box-shadow: none !important;
+                border: none !important;
+                max-width: 100% !important;
+                padding: 0 !important;
+            }
+            .report-action-row, .review-section-wrapper {
+                display: none !important;
+            }
+            .circle-progress {
+                border: 4px solid var(--accent) !important;
+                background: none !important;
+            }
+            .circle-progress::before {
+                display: none;
+            }
+            .modern-report-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========================================== -->
+    <!-- LOGIN VIEW                                 -->
+    <!-- ========================================== -->
+    <section id="loginView" class="view-section active">
+        <div class="portal-card">
+            <div class="portal-header">
+                <h1>Dev Coaching</h1>
+                <p>ONLINE HTML EXAMINATION PORTAL</p>
+            </div>
+            <h2>Candidate Authentication</h2>
+            <div class="form-group">
+                <label for="candidateName">Enter Your Full Name</label>
+                <input type="text" id="candidateName" class="form-control" placeholder="e.g. John Doe" autocomplete="off">
+            </div>
+            <button id="btnLoginNext" class="btn btn-accent">Start Examination</button>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- INSTRUCTIONS VIEW                          -->
+    <!-- ========================================== -->
+    <section id="instructionsView" class="view-section">
+        <div class="portal-card">
+            <div class="portal-header">
+                <h1>Dev Coaching</h1>
+                <p>EXAMINATION INSTRUCTIONS</p>
+            </div>
+            <h2>Please read carefully before starting</h2>
+            <ul class="instructions-list">
+                <li><strong>Total Questions:</strong> 20 MCQs</li>
+                <li><strong>Subject:</strong> HTML Basics Evaluation</li>
+                <li><strong>Duration:</strong> 20 Minutes (Auto-submits)</li>
+                <li><strong>Marking Scheme:</strong> 1 Mark per correct answer</li>
+                <li><strong>Negative Marking:</strong> None</li>
+                <li><strong>Security Rules:</strong> Tab switching, minifying, or leaving fullscreen mode triggers immediate security violations.</li>
+                <li>3 Violations will lock your workspace and <strong>Auto-Submit</strong> your answers immediately.</li>
+            </ul>
+            <button id="btnStartExam" class="btn btn-primary">Start Exam</button>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- MAIN EXAMINATION VIEW                     -->
+    <!-- ========================================== -->
+    <section id="examView" class="view-section">
+        <div class="exam-header">
+            <div class="exam-logo">
+                <h2>Dev Coaching <span>Portal</span></h2>
+            </div>
+            <div class="exam-timer-box">
+                <span id="timerIcon">⏱</span>
+                <span id="examTimer">20:00</span>
+            </div>
+        </div>
+
+        <div class="exam-layout">
+            <!-- Question Engine -->
+            <main class="main-panel">
+                <div id="questionContainer">
+                    <div class="question-number" id="lblQuestionNum">Question 1 of 20</div>
+                    <div class="question-text" id="lblQuestionText">Loading question details...</div>
+                    <div class="options-container" id="boxOptions">
+                        <!-- Options generated dynamically -->
+                    </div>
+                </div>
+
+                <div class="action-bar">
+                    <button id="btnPrev" class="btn btn-secondary">Previous</button>
+                    <button id="btnNext" class="btn btn-primary">Next</button>
+                </div>
+            </main>
+
+            <!-- Navigation Matrix Palette -->
+            <aside class="side-panel">
+                <h3>Question Navigation</h3>
+                <div class="palette-grid" id="paletteGrid">
+                    <!-- Grid items generated dynamically -->
+                </div>
+
+                <div class="legend-box">
+                    <div class="legend-item">
+                        <div class="legend-color p-unvisited"></div>
+                        <span>Not Visited</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color p-visited"></div>
+                        <span>Visited (Unanswered)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color p-answered"></div>
+                        <span>Answered</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- REDESIGNED PERFORMANCE ANALYTICS REPORT    -->
+    <!-- ========================================== -->
+    <section id="resultView" class="view-section">
+        <div class="result-container">
+            <div class="portal-header">
+                <h1>Dev Coaching</h1>
+                <p>Official Examination Performance Metrics</p>
+            </div>
+
+            <div class="modern-report-grid">
+                <!-- Left Column - Visual Metrics Badge -->
+                <div class="report-hero-panel">
+                    <div class="circle-progress" id="resultCircle">
+                        <div class="circle-value" id="lblPercentage">0%</div>
+                    </div>
+                    <div class="badge-grade" id="lblGradeBadge">F</div>
+                </div>
+
+                <!-- Right Column - Matrix Core Tiles & Metadata Box -->
+                <div class="report-dashboard">
+                    <div class="analytics-metrics-box">
+                        <div class="modern-metric-tile tile-primary">
+                            <span class="tile-l">Total Marks</span>
+                            <span class="tile-v" id="lblScore">0 / 20</span>
+                        </div>
+                        <div class="modern-metric-tile tile-accent">
+                            <span class="tile-l">Status</span>
+                            <span class="tile-v" id="lblStatus">FAIL</span>
+                        </div>
+                        <div class="modern-metric-tile">
+                            <span class="tile-l">Correct</span>
+                            <span class="tile-v" style="color: var(--success);" id="lblCorrect">0</span>
+                        </div>
+                        <div class="modern-metric-tile">
+                            <span class="tile-l">Wrong</span>
+                            <span class="tile-v" style="color: var(--danger);" id="lblWrong">0</span>
+                        </div>
+                    </div>
+
+                    <div class="candidate-metadata-card">
+                        <div class="meta-field">
+                            <span class="meta-field-label">Candidate Name</span>
+                            <span class="meta-field-value" id="resName">-</span>
+                        </div>
+                        <div class="meta-field">
+                            <span class="meta-field-label">Subject Domain</span>
+                            <span class="meta-field-value">HTML Basics</span>
+                        </div>
+                        <div class="meta-field">
+                            <span class="meta-field-label">Completion Date</span>
+                            <span class="meta-field-value" id="resDate">-</span>
+                        </div>
+                        <div class="meta-field">
+                            <span class="meta-field-label">Total Time Taken</span>
+                            <span class="meta-field-value" id="resTime">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Evaluated Incorrect Answer Review Module Feature -->
+                <div class="review-section-wrapper" id="reviewSectionWrapper">
+                    <div class="review-title-box">
+                        <h3>Evaluation Incorrect Response Review</h3>
+                    </div>
+                    <div class="review-scroller" id="reviewScroller">
+                        <!-- Wrong responses review logs dynamically generated -->
+                    </div>
+                </div>
+
+                <!-- Unified Action Bar Block Wrapper -->
+                <div class="report-action-row">
+                    <button id="btnPrint" class="btn btn-secondary">Print Result</button>
+                    <button id="btnRestart" class="btn btn-accent">Restart Exam</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- INTERACTIVE DIALOG OVERLAYS                -->
+    <!-- ========================================== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box" id="modalBox">
+            <div class="modal-icon" id="modalIcon">⚠</div>
+            <div class="modal-title" id="modalTitle">Security Dynamic Warning</div>
+            <div class="modal-msg" id="modalMsg">Action violation processed. Continued divergence forces submission metrics.</div>
+            <div class="modal-actions" id="modalActions">
+                <!-- Managed contextually via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- APPLICATION LOGIC ENGINE                   -->
+    <!-- ========================================== -->
+    <script>
+        // --- DATA LAYER: 20 EASY HTML MCQS ---
+        const questionsData = [
+            { q: "What does HTML stand for?", o: ["Hyper Text Markup Language", "Hyperlinks and Text Markup Language", "Home Tool Markup Language", "Hyper Tech Metric Language"], a: 0 },
+            { q: "Which declaration specifies the document type as HTML5?", o: ["&lt;!DOCTYPE html5&gt;", "&lt;!DOCTYPE html&gt;", "&lt;html doctype&gt;", "&lt;meta doctype=\"html5\"&gt;"], a: 1 },
+            { q: "What is the correct HTML tag for the largest heading?", o: ["&lt;heading&gt;", "&lt;h6&gt;", "&lt;head&gt;", "&lt;h1&gt;"], a: 3 },
+            { q: "Which HTML tag is used to define a paragraph?", o: ["&lt;p&gt;", "&lt;para&gt;", "&lt;pre&gt;", "&lt;paragraph&gt;"], a: 0 },
+            { q: "How can you create an ordered list in HTML?", o: ["&lt;ul&gt;", "&lt;list&gt;", "&lt;ol&gt;", "&lt;dl&gt;"], a: 2 },
+            { q: "Which attribute is required for an image tag to display an image resource?", o: ["href", "src", "link", "alt"], a: 1 },
+            { q: "Which HTML tag is used to create a hyperlink?", o: ["&lt;link&gt;", "&lt;a&gt;", "&lt;href&gt;", "&lt;hyper&gt;"], a: 1 },
+            { q: "What HTML tag is used to define a table row?", o: ["&lt;row&gt;", "&lt;td&gt;", "&lt;th&gt;", "&lt;tr&gt;"], a: 3 },
+            { q: "Which HTML element container holds collection items like text inputs and submission buttons?", o: ["&lt;input&gt;", "&lt;form&gt;", "&lt;actions&gt;", "&lt;fieldset&gt;"], a: 1 },
+            { q: "Which input type value renders a specialized element optimized for password processing masking?", o: ["text", "hidden", "password", "secure"], a: 2 },
+            { q: "Which element represents independent, structural semantic content isolated within a page architecture?", o: ["&lt;div&gt;", "&lt;section&gt;", "&lt;article&gt;", "&lt;span&gt;"], a: 2 },
+            { q: "Which tag embeds standard compressed audio files into modern standard layouts natively?", o: ["&lt;audio&gt;", "&lt;sound&gt;", "&lt;music&gt;", "&lt;embed&gt;"], a: 0 },
+            { q: "Which HTML5 element natively delivers internal cross-browser embedded layout streaming video data loops?", o: ["&lt;media&gt;", "&lt;movie&gt;", "&lt;iframe&gt;", "&lt;video&gt;"], a: 3 },
+            { q: "Where are document &lt;meta&gt; tags located within structured document hierarchies?", o: ["Inside &lt;body&gt;", "Inside &lt;head&gt;", "Before &lt;html&gt;", "Inside &lt;footer&gt;"], a: 1 },
+            { q: "Which target attribute value opens a linked document anchor in a totally new window frame or context tab?", o: ["_self", "_parent", "_blank", "_top"], a: 2 },
+            { q: "What is the structural functional default layout nature of a standard native structural &lt;div&gt; tag?", o: ["Inline", "Flex", "Grid", "Block-level"], a: 3 },
+            { q: "What is the structural functional default layout nature of a standard native structural &lt;span&gt; tag?", o: ["Inline", "Block", "Inline-block", "None"], a: 0 },
+            { q: "Which element is considered a non-semantic container block component element?", o: ["&lt;form&gt;", "&lt;table&gt;", "&lt;div&gt;", "&lt;header&gt;"], a: 2 },
+            { q: "Which configuration defines correct native HTML comments architecture syntax formatting?", o: ["// Comment", "&lt;!-- Comment --&gt;", "/* Comment */", "# Comment"], a: 1 },
+            { q: "Which attribute provides fallback descriptive typography parameters when graphic assets collapse or drop connections?", o: ["title", "src", "alt", "desc"], a: 2 }
+        ];
+
+        // --- CORE APPLICATION ARCHITECTURE STATE ---
+        let candidateName = "";
+        let currentIdx = 0;
+        let totalTime = 1200; // 20 mins * 60
+        let timerInterval = null;
+        let selectedAnswers = new Array(questionsData.length).fill(null);
+        let visitedQuestions = new Array(questionsData.length).fill(false);
+        
+        let securityViolations = 0;
+        let fullscreenExits = 0;
+        let blockSecurityListeners = false;
+
+        // --- DOM MAP DICTIONARY ---
+        const views = {
+            login: document.getElementById("loginView"),
+            instructions: document.getElementById("instructionsView"),
+            exam: document.getElementById("examView"),
+            result: document.getElementById("resultView")
+        };
+
+        const overlay = document.getElementById("modalOverlay");
+        const modalBox = document.getElementById("modalBox");
+
+        // --- EVENT INTERCEPTORS (ANTI-CHEATING WORKSPACE MODES) ---
+        function applySecurityLocks() {
+            const block = (e) => { e.preventDefault(); return false; };
+            document.addEventListener('contextmenu', block);
+            document.addEventListener('selectstart', block);
+            document.addEventListener('copy', block);
+            document.addEventListener('cut', block);
+            document.addEventListener('paste', block);
+            document.addEventListener('dragstart', block);
+        }
+
+        function removeSecurityLocks() {
+            const unblock = (e) => true;
+            document.oncontextmenu = unblock;
+            document.onselectstart = unblock;
+        }
+
+        // --- ROUTING ROUTINES ---
+        function changeView(viewKey) {
+            Object.keys(views).forEach(k => views[k].classList.remove("active"));
+            views[viewKey].classList.add("active");
+            window.scrollTo(0, 0);
+        }
+
+        // --- DIALOG PRESENTATION CONTROLLER ---
+        function showModal({ type, title, message, actions }) {
+            const iconEl = document.getElementById("modalIcon");
+            iconEl.className = "modal-icon " + (type === 'warn' ? 'warn' : 'confirm');
+            iconEl.innerText = type === 'warn' ? '⚠' : '❓';
+            
+            document.getElementById("modalTitle").innerText = title;
+            document.getElementById("modalMsg").innerText = message;
+            
+            const actionsBox = document.getElementById("modalActions");
+            actionsBox.innerHTML = "";
+
+            actions.forEach(act => {
+                const b = document.createElement("button");
+                b.className = `btn ${act.css}`;
+                b.innerText = act.text;
+                b.onclick = () => {
+                    overlay.classList.remove("active");
+                    if (act.callback) act.callback();
+                };
+                actionsBox.appendChild(b);
+            });
+
+            overlay.classList.add("active");
+        }
+
+        // --- FULLSCREEN CONTROLLERS ---
+        function enterFullscreen() {
+            const doc = document.documentElement;
+            if (doc.requestFullscreen) doc.requestFullscreen();
+            else if (doc.mozRequestFullScreen) doc.mozRequestFullScreen();
+            else if (doc.webkitRequestFullscreen) doc.webkitRequestFullscreen();
+            else if (doc.msRequestFullscreen) doc.msRequestFullscreen();
+        }
+
+        function handleFullscreenChange() {
+            if (views.exam.classList.contains("active")) {
+                const isFull = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+                if (!isFull && !blockSecurityListeners) {
+                    fullscreenExits++;
+                    if (fullscreenExits >= 3) {
+                        blockSecurityListeners = true;
+                        submitExam(true);
+                    } else {
+                        showModal({
+                            type: 'warn',
+                            title: 'Fullscreen Requirement',
+                            message: `Leaving fullscreen is a direct policy violation (${fullscreenExits}/2 Warnings). Please re-enter secure environment layout immediately.`,
+                            actions: [{ text: 'Re-enter', css: 'btn-accent', callback: enterFullscreen }]
+                        });
+                    }
+                }
+            }
+        }
+
+        // --- ENVIRONMENT DETECTION ---
+        function handleVisibilityChange() {
+            if (views.exam.classList.contains("active") && !blockSecurityListeners) {
+                if (document.hidden || document.visibilityState === 'hidden') {
+                    triggerSecurityViolation();
+                }
+            }
+        }
+
+        function handleWindowBlur() {
+            if (views.exam.classList.contains("active") && !blockSecurityListeners) {
+                triggerSecurityViolation();
+            }
+        }
+
+        function triggerSecurityViolation() {
+            securityViolations++;
+            if (securityViolations >= 3) {
+                blockSecurityListeners = true;
+                submitExam(true);
+            } else {
+                showModal({
+                    type: 'warn',
+                    title: 'Security Intercept Triggered',
+                    message: `Tab switching or focus loss detected. This action is unauthorized (${securityViolations}/2 Warnings). Continuous evaluation deviation triggers instantaneous submission.`,
+                    actions: [{ text: 'Return to Exam', css: 'btn-accent', callback: () => {} }]
+                });
+            }
+        }
+
+        // --- MAIN WORKFLOW HANDLERS ---
+        function startExam() {
+            candidateName = document.getElementById("candidateName").value.trim();
+            visitedQuestions[0] = true;
+            applySecurityLocks();
+            buildPaletteGrid();
+            showQuestion(0);
+            
+            // System Sub-routines Init
+            enterFullscreen();
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            changeView("exam");
+        }
+
+        function updateTimer() {
+            if (totalTime <= 0) {
+                clearInterval(timerInterval);
+                blockSecurityListeners = true;
+                submitExam(true); // Auto Forced Submission
+                return;
+            }
+            totalTime--;
+            const mins = Math.floor(totalTime / 60);
+            const secs = totalTime % 60;
+            document.getElementById("examTimer").innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // --- RENDER MATRIX ENGINE ---
+        function showQuestion(idx) {
+            currentIdx = idx;
+            visitedQuestions[idx] = true;
+            
+            document.getElementById("lblQuestionNum").innerText = `Question ${idx + 1} of ${questionsData.length}`;
+            document.getElementById("lblQuestionText").innerHTML = questionsData[idx].q;
+            
+            const optionsBox = document.getElementById("boxOptions");
+            optionsBox.innerHTML = "";
+
+            questionsData[idx].o.forEach((opt, oIdx) => {
+                const label = document.createElement("label");
+                label.className = `option-label ${selectedAnswers[idx] === oIdx ? 'selected' : ''}`;
+                
+                const radio = document.createElement("input");
+                radio.type = "radio";
+                radio.name = "examOption";
+                radio.value = oIdx;
+                radio.checked = selectedAnswers[idx] === oIdx;
+                
+                radio.onchange = () => {
+                    document.querySelectorAll('.option-label').forEach(l => l.classList.remove('selected'));
+                    label.classList.add('selected');
+                    saveAnswer(idx, oIdx);
+                };
+
+                label.appendChild(radio);
+                
+                const txtNode = document.createElement("span");
+                txtNode.innerHTML = opt;
+                label.appendChild(txtNode);
+                
+                optionsBox.appendChild(label);
+            });
+
+            // Action Buttons Adjustments
+            document.getElementById("btnPrev").style.visibility = idx === 0 ? "hidden" : "visible";
+            const nextBtn = document.getElementById("btnNext");
+            if (idx === questionsData.length - 1) {
+                nextBtn.innerText = "Submit";
+                nextBtn.className = "btn btn-danger";
+            } else {
+                nextBtn.innerText = "Next";
+                nextBtn.className = "btn btn-accent";
+            }
+
+            updatePalette();
+        }
+
+        function saveAnswer(qIdx, ansIdx) {
+            selectedAnswers[qIdx] = ansIdx;
+            updatePalette();
+        }
+
+        function nextQuestion() {
+            if (currentIdx < questionsData.length - 1) {
+                showQuestion(currentIdx + 1);
+            } else {
+                // Submit Flow Confirmation
+                showModal({
+                    type: 'confirm',
+                    title: 'Confirm Examination Submission',
+                    message: 'Are you sure you want to submit your examination? Final scores will instantly register across database indices.',
+                    actions: [
+                        { text: 'Cancel', css: 'btn-secondary', callback: () => {} },
+                        { text: 'Submit Exam', css: 'btn-danger', callback: () => { submitExam(false); } }
+                    ]
+                });
+            }
+        }
+
+        function previousQuestion() {
+            if (currentIdx > 0) {
+                showQuestion(currentIdx - 1);
+            }
+        }
+
+        // --- PALETTE MATRIX CONTROLS ---
+        function buildPaletteGrid() {
+            const grid = document.getElementById("paletteGrid");
+            grid.innerHTML = "";
+            for (let i = 0; i < questionsData.length; i++) {
+                const btn = document.createElement("button");
+                btn.id = `palette-b-${i}`;
+                btn.innerText = i + 1;
+                btn.onclick = () => showQuestion(i);
+                grid.appendChild(btn);
+            }
+        }
+
+        function updatePalette() {
+            for (let i = 0; i < questionsData.length; i++) {
+                const btn = document.getElementById(`palette-b-${i}`);
+                if (!btn) continue;
+                
+                // Clear Classes
+                btn.className = "palette-btn";
+
+                if (selectedAnswers[i] !== null) {
+                    btn.classList.add("p-answered");
+                } else if (visitedQuestions[i]) {
+                    btn.classList.add("p-visited");
+                } else {
+                    btn.classList.add("p-unvisited");
+                }
+
+                if (i === currentIdx) {
+                    btn.classList.add("p-current");
+                }
+            }
+        }
+
+        // --- CORE EVALUATION CALCULATORS ---
+        function calculateScore() {
+            let correct = 0;
+            selectedAnswers.forEach((ans, idx) => {
+                if (ans === questionsData[idx].a) correct++;
+            });
+            return correct;
+        }
+
+        function calculateGrade(pct) {
+            if (pct >= 90) return 'A+';
+            if (pct >= 80) return 'A';
+            if (pct >= 70) return 'B';
+            if (pct >= 60) return 'C';
+            if (pct >= 50) return 'D';
+            return 'F';
+        }
+
+        // --- COMPLETION ROUTINES ---
+        function submitExam(forced = false) {
+            clearInterval(timerInterval);
+            removeSecurityLocks();
+
+            // Handle UI exiting fullscreen gently post tracking
+            if (document.exitFullscreen) {
+                document.exitFullscreen().catch(() => {});
+            }
+
+            if (forced) {
+                showModal({
+                    type: 'warn',
+                    title: 'Evaluation Terminated Automatically',
+                    message: 'The engine locked processing loops and closed parameters via forced deadline limitations or recursive framework violations.',
+                    actions: [{ text: 'View Report Card', css: 'btn-accent', callback: () => { displayMetricsReport(); } }]
+                });
+            } else {
+                displayMetricsReport();
+            }
+        }
+
+        function displayMetricsReport() {
+            const correct = calculateScore();
+            const total = questionsData.length;
+            const wrong = total - correct;
+            const pct = Math.round((correct / total) * 100);
+            const grade = calculateGrade(pct);
+            const isPass = pct >= 50;
+
+            // Mapping Text Parameters
+            document.getElementById("resName").innerText = candidateName || "Anonymous Learner";
+            document.getElementById("resDate").innerText = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+            
+            const timeSpentSecs = 1200 - totalTime;
+            const elapsedMins = Math.floor(timeSpentSecs / 60);
+            const elapsedSecs = timeSpentSecs % 60;
+            document.getElementById("resTime").innerText = `${elapsedMins}m ${elapsedSecs}s`;
+
+            document.getElementById("lblScore").innerText = `${correct} / ${total}`;
+            document.getElementById("lblCorrect").innerText = correct;
+            document.getElementById("lblWrong").innerText = wrong;
+            document.getElementById("lblPercentage").innerText = `${pct}%`;
+            
+            const badge = document.getElementById("lblGradeBadge");
+            badge.innerText = `Grade: ${grade}`;
+            
+            const lblStatus = document.getElementById("lblStatus");
+            if (isPass) {
+                lblStatus.innerText = "PASS";
+                lblStatus.style.color = "var(--success)";
+                badge.className = "badge-grade status-pass";
+            } else {
+                lblStatus.innerText = "FAIL";
+                lblStatus.style.color = "var(--danger)";
+                badge.className = "badge-grade status-fail";
+            }
+
+            // Radial Conic Fill Calculation
+            document.getElementById("resultCircle").style.background = `conic-gradient(var(--accent) ${pct * 3.6}deg, var(--gray-light) 0deg)`;
+
+            // --- GENERATE WRONG ANSWERS REVIEW TILES FEATURE ---
+            const reviewScroller = document.getElementById("reviewScroller");
+            const reviewSectionWrapper = document.getElementById("reviewSectionWrapper");
+            reviewScroller.innerHTML = "";
+
+            let hasErrors = false;
+            questionsData.forEach((qObj, idx) => {
+                if (selectedAnswers[idx] !== qObj.a) {
+                    hasErrors = true;
+                    
+                    const itemCard = document.createElement("div");
+                    itemCard.className = "review-item-card";
+
+                    const qText = document.createElement("div");
+                    qText.className = "review-q-text";
+                    qText.innerHTML = `Q${idx + 1}: ${qObj.q}`;
+                    itemCard.appendChild(qText);
+
+                    const ansRow = document.createElement("div");
+                    ansRow.className = "review-ans-row";
+
+                    const userAnsBlock = document.createElement("div");
+                    userAnsBlock.className = "ans-block user-filled";
+                    const userSelectedText = selectedAnswers[idx] === null ? "No Answer Submitted" : qObj.o[selectedAnswers[idx]];
+                    userAnsBlock.innerHTML = `<span>Your Answer:</span> <br> ${userSelectedText}`;
+                    ansRow.appendChild(userAnsBlock);
+
+                    const correctAnsBlock = document.createElement("div");
+                    correctAnsBlock.className = "ans-block correct-target";
+                    correctAnsBlock.innerHTML = `<span>Correct Answer:</span> <br> ${qObj.o[qObj.a]}`;
+                    ansRow.appendChild(correctAnsBlock);
+
+                    itemCard.appendChild(ansRow);
+                    reviewScroller.appendChild(itemCard);
+                }
+            });
+
+            if (hasErrors) {
+                reviewSectionWrapper.style.display = "block";
+            } else {
+                reviewSectionWrapper.style.display = "none";
+            }
+
+            changeView("result");
+        }
+
+        function resetState() {
+            currentIdx = 0;
+            totalTime = 1200;
+            selectedAnswers.fill(null);
+            visitedQuestions.fill(false);
+            securityViolations = 0;
+            fullscreenExits = 0;
+            blockSecurityListeners = false;
+            document.getElementById("candidateName").value = "";
+            changeView("login");
+        }
+
+        // --- ENTRY POINT LISTENERS ASSEMBLY ---
+        window.addEventListener('DOMContentLoaded', () => {
+            // Screen Level Controls Flow
+            document.getElementById("btnLoginNext").onclick = () => {
+                const nameInput = document.getElementById("candidateName").value.trim();
+                if (!nameInput) {
+                    alert("Candidate registration parameter error: Identification input cannot remain unpopulated.");
+                    return;
+                }
+                changeView("instructions");
+            };
+
+            document.getElementById("btnStartExam").onclick = startExam;
+            document.getElementById("btnPrev").onclick = previousQuestion;
+            document.getElementById("btnNext").onclick = nextQuestion;
+            
+            document.getElementById("btnPrint").onclick = () => { window.print(); };
+            document.getElementById("btnRestart").onclick = resetState;
+
+            // Security Core Listeners Attachments
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+            document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+            window.addEventListener('blur', handleWindowBlur);
+        });
+    </script>
+</body>
+</html>
